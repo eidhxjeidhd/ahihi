@@ -6,12 +6,12 @@ local Window = Rayfield:CreateWindow({
    LoadingTitle = "Gà Gaming Hub",
    LoadingSubtitle = "by TBOY ROBLOX",
    ConfigurationSaving = {
-      Enabled = true,
+      Enabled = false,
       FolderName = "GaGamingHub",
       FileName = "Config"
    },
    Discord = {
-      Enabled = true,
+      Enabled = false,
       Invite = "tboyroblox",
       RememberJoins = true
    },
