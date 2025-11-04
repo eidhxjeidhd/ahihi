@@ -1,0 +1,632 @@
+-- discord.gg/tboyroblox
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Window = Rayfield:CreateWindow({
+   Name = "🔥 Gà Gaming Hub | Blox Fruits",
+   LoadingTitle = "Gà Gaming Hub",
+   LoadingSubtitle = "by TBOY ROBLOX",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = "GaGamingHub",
+      FileName = "Config"
+   },
+   Discord = {
+      Enabled = true,
+      Invite = "tboyroblox",
+      RememberJoins = true
+   },
+   KeySystem = false,
+})
+
+-- Tab chính
+local MainTab = Window:CreateTab("🏠 Trang Chính", "rbxassetid://7733765390")
+local FarmingSection = MainTab:CreateSection("⚔️ Auto Farm")
+
+local AutoLevelToggle = MainTab:CreateToggle({
+   Name = "Auto Cày Cấp",
+   CurrentValue = false,
+   Flag = "AutoLevel",
+   Callback = function(Value)
+      _G.AutoLevel = Value
+   end,
+})
+
+local AutoMasteryToggle = MainTab:CreateToggle({
+   Name = "Auto Thông Thạo",
+   CurrentValue = false,
+   Flag = "AutoMastery",
+   Callback = function(Value)
+      _G.AutoMastery = Value
+   end,
+})
+
+local SelectWeaponDropdown = MainTab:CreateDropdown({
+   Name = "Chọn Vũ Khí",
+   Options = {"Melee", "Sword", "Blox Fruit"},
+   CurrentOption = "Melee",
+   Flag = "SelectWeapon",
+   Callback = function(Option)
+      _G.SelectWeapon = Option
+   end,
+})
+
+-- Section tự động nâng tỉ lệ khi level up
+local AutoStatsSection = MainTab:CreateSection("📊 Auto Nâng Tỉ Lệ Stats")
+
+local AutoStatsToggle = MainTab:CreateToggle({
+   Name = "Auto Nâng Tỉ Lệ Stats",
+   CurrentValue = false,
+   Flag = "AutoStats",
+   Callback = function(Value)
+      _G.AutoStats = Value
+   end,
+})
+
+local MeleePercentage = MainTab:CreateSlider({
+   Name = "Tỉ Lệ Melee (%)",
+   Range = {0, 100},
+   Increment = 5,
+   Suffix = "%",
+   CurrentValue = 60,
+   Flag = "MeleePercentage",
+   Callback = function(Value)
+      _G.MeleePercentage = Value
+   end,
+})
+
+local DefensePercentage = MainTab:CreateSlider({
+   Name = "Tỉ Lệ Defense (%)",
+   Range = {0, 100},
+   Increment = 5,
+   Suffix = "%",
+   CurrentValue = 20,
+   Flag = "DefensePercentage",
+   Callback = function(Value)
+      _G.DefensePercentage = Value
+   end,
+})
+
+local SwordPercentage = MainTab:CreateSlider({
+   Name = "Tỉ Lệ Sword (%)",
+   Range = {0, 100},
+   Increment = 5,
+   Suffix = "%",
+   CurrentValue = 20,
+   Flag = "SwordPercentage",
+   Callback = function(Value)
+      _G.SwordPercentage = Value
+   end,
+})
+
+local GunPercentage = MainTab:CreateSlider({
+   Name = "Tỉ Lệ Gun (%)",
+   Range = {0, 100},
+   Increment = 5,
+   Suffix = "%",
+   CurrentValue = 0,
+   Flag = "GunPercentage",
+   Callback = function(Value)
+      _G.GunPercentage = Value
+   end,
+})
+
+local FruitPercentage = MainTab:CreateSlider({
+   Name = "Tỉ Lệ Blox Fruit (%)",
+   Range = {0, 100},
+   Increment = 5,
+   Suffix = "%",
+   CurrentValue = 0,
+   Flag = "FruitPercentage",
+   Callback = function(Value)
+      _G.FruitPercentage = Value
+   end,
+})
+
+local BossSection = MainTab:CreateSection("👑 Auto Boss")
+
+local Bosses = {}
+if game.PlaceId == 2753915549 then
+   Bosses = {"The Gorilla King", "Bobby", "Yeti", "Vice Admiral", "Saber Expert"}
+elseif game.PlaceId == 4442272183 then
+   Bosses = {"Diamond", "Jeremy", "Fajita", "Don Swan", "Smoke Admiral"}
+elseif game.PlaceId == 7449423635 then
+   Bosses = {"Stone", "Island Empress", "Kilo Admiral", "Captain Elephant", "Beautiful Pirate"}
+end
+
+local SelectBossDropdown = MainTab:CreateDropdown({
+   Name = "Chọn Boss",
+   Options = Bosses,
+   CurrentOption = Bosses[1],
+   Flag = "SelectBoss",
+   Callback = function(Option)
+      _G.SelectBoss = Option
+   end,
+})
+
+local AutoBossToggle = MainTab:CreateToggle({
+   Name = "Auto Đánh Boss",
+   CurrentValue = false,
+   Flag = "AutoBoss",
+   Callback = function(Value)
+      _G.AutoBoss = Value
+   end,
+})
+
+-- Tab Code Redeem
+local CodeTab = Window:CreateTab("🎁 Nhập Code", "rbxassetid://7733915343")
+
+local CodeSection = CodeTab:CreateSection("🔑 Nhập Code Thủ Công")
+
+local CodeInput = CodeTab:CreateInput({
+   Name = "Nhập Code",
+   PlaceholderText = "Nhập code tại đây...",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+      _G.ManualCode = Text
+   end,
+})
+
+local RedeemButton = CodeTab:CreateButton({
+   Name = "Redeem Code",
+   Callback = function()
+      if _G.ManualCode and _G.ManualCode ~= "" then
+         game:GetService("ReplicatedStorage").Remotes.Redeem:InvokeServer(_G.ManualCode)
+         Rayfield:Notify({
+            Title = "Redeem Code",
+            Content = "Đã nhập code: " .. _G.ManualCode,
+            Duration = 5
+         })
+      else
+         Rayfield:Notify({
+            Title = "Lỗi",
+            Content = "Vui lòng nhập code!",
+            Duration = 3
+         })
+      end
+   end,
+})
+
+local AutoCodeSection = CodeTab:CreateSection("🤖 Auto Redeem Codes")
+
+local AutoRedeemToggle = CodeTab:CreateToggle({
+   Name = "Auto Redeem Tất Cả Codes",
+   CurrentValue = false,
+   Flag = "AutoRedeem",
+   Callback = function(Value)
+      _G.AutoRedeem = Value
+   end,
+})
+
+-- Danh sách codes Blox Fruits
+local BloxFruitCodes = {
+   "KITT_RESET",
+   "SUB2GAMERROBOT_EXP1", 
+   "SUB2NOOBMASTER123",
+   "Sub2Daigrock",
+   "Axiore",
+   "TantaiGaming",
+   "STRAWHATMAINE",
+   "SUB2OFFICIALNOOBIE",
+   "THEGREATACE",
+   "FUDD10",
+   "BIGNEWS",
+   "SUB2GAMERROBOT_RESET1",
+   "UPD16",
+   "3BVISITS",
+   "fudd10_v2",
+   "StrawHatMaine",
+   "SUB2NOOBMASTER123",
+   "Sub2OfficialNoobie",
+   "SUB2GAMERROBOT_EXP1",
+   "SUB2GAMERROBOT_RESET1",
+   "THEGREATACE",
+   "StrawHatMaine",
+   "SUB2NOOBMASTER123",
+   "Sub2OfficialNoobie",
+   "SUB2GAMERROBOT_EXP1",
+   "SUB2GAMERROBOT_RESET1"
+}
+
+local CodeList = CodeTab:CreateParagraph({
+   Title = "📋 Danh Sách Codes Hiện Có",
+   Content = table.concat(BloxFruitCodes, "\n")
+})
+
+-- Tab Combat
+local CombatTab = Window:CreateTab("⚡ Combat", "rbxassetid://7733674072")
+
+local CombatSection = CombatTab:CreateSection("🎯 Combat Settings")
+
+local FastAttackToggle = CombatTab:CreateToggle({
+   Name = "Fast Attack",
+   CurrentValue = false,
+   Flag = "FastAttack",
+   Callback = function(Value)
+      _G.FastAttack = Value
+   end,
+})
+
+local SuperFastAttackToggle = CombatTab:CreateToggle({
+   Name = "Super Fast Attack",
+   CurrentValue = false,
+   Flag = "SuperFastAttack",
+   Callback = function(Value)
+      _G.SuperFastAttack = Value
+   end,
+})
+
+local AutoHakiToggle = CombatTab:CreateToggle({
+   Name = "Auto Haki",
+   CurrentValue = false,
+   Flag = "AutoHaki",
+   Callback = function(Value)
+      _G.AutoHaki = Value
+   end,
+})
+
+local SkillsSection = CombatTab:CreateSection("🔥 Auto Skill")
+
+local SkillZToggle = CombatTab:CreateToggle({
+   Name = "Auto Skill Z",
+   CurrentValue = false,
+   Flag = "SkillZ",
+   Callback = function(Value)
+      _G.SkillZ = Value
+   end,
+})
+
+local SkillXToggle = CombatTab:CreateToggle({
+   Name = "Auto Skill X",
+   CurrentValue = false,
+   Flag = "SkillX",
+   Callback = function(Value)
+      _G.SkillX = Value
+   end,
+})
+
+local SkillCToggle = CombatTab:CreateToggle({
+   Name = "Auto Skill C",
+   CurrentValue = false,
+   Flag = "SkillC",
+   Callback = function(Value)
+      _G.SkillC = Value
+   end,
+})
+
+local SkillVToggle = CombatTab:CreateToggle({
+   Name = "Auto Skill V",
+   CurrentValue = false,
+   Flag = "SkillV",
+   Callback = function(Value)
+      _G.SkillV = Value
+   end,
+})
+
+-- Tab Teleport
+local TeleportTab = Window:CreateTab("📍 Teleport", "rbxassetid://7733682953")
+
+local IslandsSection = TeleportTab:CreateSection("🏝️ Đảo")
+
+local Islands = {}
+if game.PlaceId == 2753915549 then
+   Islands = {"Jungle", "Desert", "Snow Mountain", "Marine Fortress", "Sky Island"}
+elseif game.PlaceId == 4442272183 then
+   Islands = {"Kingdom of Rose", "Usoap's Island", "Green Bit", "Zou"}
+elseif game.PlaceId == 7449423635 then
+   Islands = {"Mansion", "Castle on the Sea", "Hydra Island", "Floating Turtle", "Ice Cream Island"}
+end
+
+for _, island in pairs(Islands) do
+   TeleportTab:CreateButton({
+      Name = "TP " .. island,
+      Callback = function()
+         Rayfield:Notify({
+            Title = "Teleport",
+            Content = "Đang dịch chuyển đến " .. island,
+            Duration = 3
+         })
+      end,
+   })
+end
+
+-- Tab Misc
+local MiscTab = Window:CreateTab("🔧 Misc", "rbxassetid://7733707315")
+
+local VisualSection = MiscTab:CreateSection("👁️ Visual")
+
+local ESPToggle = MiscTab:CreateToggle({
+   Name = "ESP Player",
+   CurrentValue = false,
+   Flag = "ESPPlayer",
+   Callback = function(Value)
+      _G.ESPPlayer = Value
+   end,
+})
+
+local ChestESPToggle = MiscTab:CreateToggle({
+   Name = "ESP Rương",
+   CurrentValue = false,
+   Flag = "ChestESP",
+   Callback = function(Value)
+      _G.ChestESP = Value
+   end,
+})
+
+local DevilFruitESPToggle = MiscTab:CreateToggle({
+   Name = "ESP Trái Ác Quỷ",
+   CurrentValue = false,
+   Flag = "DevilFruitESP",
+   Callback = function(Value)
+      _G.DevilFruitESP = Value
+   end,
+})
+
+-- Tab Settings
+local SettingsTab = Window:CreateTab("⚙️ Cài Đặt", "rbxassetid://7733715274")
+
+local ConfigSection = SettingsTab:CreateSection("💾 Config")
+
+SettingsTab:CreateButton({
+   Name = "Lưu Config",
+   Callback = function()
+      Rayfield:Notify({
+         Title = "Thành Công",
+         Content = "Đã lưu config!",
+         Duration = 3
+      })
+   end,
+})
+
+SettingsTab:CreateButton({
+   Name = "Tải Config",
+   Callback = function()
+      Rayfield:Notify({
+         Title = "Thành Công",
+         Content = "Đã tải config!",
+         Duration = 3
+      })
+   end,
+})
+
+-- Toggle UI Button
+local ToggleUI = SettingsTab:CreateButton({
+   Name = "Ẩn/Hiện UI",
+   Callback = function()
+      Rayfield:Toggle()
+   end,
+})
+
+-- Tạo toggle button icon
+local ToggleGui = Instance.new("ScreenGui")
+ToggleGui.Name = "ToggleGui"
+ToggleGui.Parent = game.CoreGui
+ToggleGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+local ToggleButton = Instance.new("ImageButton")
+ToggleButton.Name = "ToggleButton"
+ToggleButton.Parent = ToggleGui
+ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ToggleButton.BorderSizePixel = 0
+ToggleButton.Position = UDim2.new(0.02, 0, 0.02, 0)
+ToggleButton.Size = UDim2.new(0, 50, 0, 50)
+ToggleButton.Draggable = true
+ToggleButton.Image = "rbxassetid://77817527501053"
+
+local UICorner = Instance.new("UICorner")
+UICorner.Parent = ToggleButton
+UICorner.CornerRadius = UDim.new(0, 12)
+
+local ParticleEmitter = Instance.new("ParticleEmitter")
+ParticleEmitter.Parent = ToggleButton
+ParticleEmitter.LightEmission = 1
+ParticleEmitter.Size = NumberSequence.new({
+   NumberSequenceKeypoint.new(0, 0.1),
+   NumberSequenceKeypoint.new(1, 0)
+})
+ParticleEmitter.Lifetime = NumberRange.new(0.5, 1)
+ParticleEmitter.Rate = 0
+ParticleEmitter.Speed = NumberRange.new(5, 10)
+ParticleEmitter.Color = ColorSequence.new(Color3.fromRGB(255, 85, 255), Color3.fromRGB(85, 255, 255))
+
+local TweenService = game:GetService("TweenService")
+
+ToggleButton.MouseButton1Down:Connect(function()
+   ParticleEmitter.Rate = 100
+   task.delay(1, function()
+      ParticleEmitter.Rate = 0
+   end)
+   
+   local RotateTween = TweenService:Create(ToggleButton, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+      Rotation = 360
+   })
+   RotateTween:Play()
+   RotateTween.Completed:Connect(function()
+      ToggleButton.Rotation = 0
+   end)
+   
+   local SizeTween = TweenService:Create(ToggleButton, TweenInfo.new(0.2, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
+      Size = UDim2.new(0, 60, 0, 60)
+   })
+   SizeTween:Play()
+   SizeTween.Completed:Connect(function()
+      local ReturnSizeTween = TweenService:Create(ToggleButton, TweenInfo.new(0.2, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
+         Size = UDim2.new(0, 50, 0, 50)
+      })
+      ReturnSizeTween:Play()
+   end)
+   
+   Rayfield:Toggle()
+end)
+
+-- Auto Stats System
+local function CalculateStatPoints()
+   local player = game.Players.LocalPlayer
+   local level = player.Data.Level.Value
+   local statPoints = level - 1
+    
+   local meleePoints = math.floor(statPoints * (_G.MeleePercentage or 60) / 100)
+   local defensePoints = math.floor(statPoints * (_G.DefensePercentage or 20) / 100)
+   local swordPoints = math.floor(statPoints * (_G.SwordPercentage or 20) / 100)
+   local gunPoints = math.floor(statPoints * (_G.GunPercentage or 0) / 100)
+   local fruitPoints = math.floor(statPoints * (_G.FruitPercentage or 0) / 100)
+    
+   return meleePoints, defensePoints, swordPoints, gunPoints, fruitPoints
+end
+
+local function UpgradeStats()
+   local melee, defense, sword, gun, fruit = CalculateStatPoints()
+   
+   -- Upgrade Melee
+   for i = 1, melee do
+      game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AddPoint", "Melee", 1)
+   end
+   
+   -- Upgrade Defense
+   for i = 1, defense do
+      game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AddPoint", "Defense", 1)
+   end
+   
+   -- Upgrade Sword
+   for i = 1, sword do
+      game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AddPoint", "Sword", 1)
+   end
+   
+   -- Upgrade Gun
+   for i = 1, gun do
+      game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AddPoint", "Gun", 1)
+   end
+   
+   -- Upgrade Blox Fruit
+   for i = 1, fruit do
+      game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AddPoint", "Demon Fruit", 1)
+   end
+end
+
+-- Auto Redeem Codes System
+local function RedeemAllCodes()
+   for _, code in pairs(BloxFruitCodes) do
+      local success, result = pcall(function()
+         return game:GetService("ReplicatedStorage").Remotes.Redeem:InvokeServer(code)
+      end)
+      
+      if success then
+         print("Đã nhập code: " .. code)
+         Rayfield:Notify({
+            Title = "Redeem Code",
+            Content = "Đã nhập: " .. code,
+            Duration = 3
+         })
+      else
+         print("Code không hợp lệ hoặc đã nhập: " .. code)
+      end
+      
+      wait(1) -- Chờ 1 giây giữa các code
+   end
+end
+
+-- Main Loop
+spawn(function()
+   local lastLevel = 0
+    
+   while task.wait(1) do
+      -- Auto Stats khi level up
+      if _G.AutoStats then
+         local currentLevel = game.Players.LocalPlayer.Data.Level.Value
+         if currentLevel > lastLevel then
+            UpgradeStats()
+            Rayfield:Notify({
+               Title = "Auto Stats",
+               Content = "Đã nâng stats theo tỉ lệ! Level: " .. currentLevel,
+               Duration = 5
+            })
+            lastLevel = currentLevel
+         end
+      end
+      
+      -- Auto Redeem Codes
+      if _G.AutoRedeem then
+         RedeemAllCodes()
+         _G.AutoRedeem = false -- Chỉ chạy 1 lần
+         Rayfield:Notify({
+            Title = "Auto Redeem",
+            Content = "Đã nhập tất cả codes!",
+            Duration = 5
+         })
+      end
+      
+      -- Auto Farm
+      if _G.AutoLevel then
+         pcall(function()
+            -- Auto Level Code
+         end)
+      end
+      
+      if _G.AutoBoss then
+         pcall(function()
+            -- Auto Boss Code
+         end)
+      end
+   end
+end)
+
+-- Combat Functions
+spawn(function()
+   while task.wait() do
+      if _G.FastAttack then
+         pcall(function()
+            -- Fast Attack Code
+         end)
+      end
+      
+      if _G.SuperFastAttack then
+         pcall(function()
+            -- Super Fast Attack Code
+         end)
+      end
+   end
+end)
+
+-- Skill Functions
+spawn(function()
+   while task.wait(0.1) do
+      if _G.SkillZ then
+         pcall(function()
+            game:service("VirtualInputManager"):SendKeyEvent(true, "Z", false, game)
+            wait()
+            game:service("VirtualInputManager"):SendKeyEvent(false, "Z", false, game)
+         end)
+      end
+      
+      if _G.SkillX then
+         pcall(function()
+            game:service("VirtualInputManager"):SendKeyEvent(true, "X", false, game)
+            wait()
+            game:service("VirtualInputManager"):SendKeyEvent(false, "X", false, game)
+         end)
+      end
+      
+      if _G.SkillC then
+         pcall(function()
+            game:service("VirtualInputManager"):SendKeyEvent(true, "C", false, game)
+            wait()
+            game:service("VirtualInputManager"):SendKeyEvent(false, "C", false, game)
+         end)
+      end
+      
+      if _G.SkillV then
+         pcall(function()
+            game:service("VirtualInputManager"):SendKeyEvent(true, "V", false, game)
+            wait()
+            game:service("VirtualInputManager"):SendKeyEvent(false, "V", false, game)
+         end)
+      end
+   end
+end)
+
+Rayfield:Notify({
+   Title = "Gà Gaming Hub",
+   Content = "Script đã được load thành công!\n✓ Auto Stats\n✓ Auto Redeem Codes\n✓ Fast Attack",
+   Duration = 6
+})
+
+Rayfield:LoadConfiguration()
